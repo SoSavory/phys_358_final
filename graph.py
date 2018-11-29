@@ -24,9 +24,3 @@ class Graph:
         for index, node in enumerate(self.nodes):
             if node.__eq__(pos):
                 return index, node
-
-    def get_node_from_index(self, i):
-        return self.nodes[i]
-
-    def get_node_edges(self, node):
-        return node.edges
