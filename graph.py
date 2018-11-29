@@ -19,3 +19,14 @@ class Graph:
         for node in self.nodes:
             for edge in node.edges:
                 edge['traversibility'] = edge['traversibility_function'](self.time)
+
+    def get_node_from_pos(self, pos):
+        for index, node in enumerate(self.nodes):
+            if node.__eq__(pos):
+                return index, node
+
+    def get_node_from_index(self, i):
+        return self.nodes[i]
+
+    def get_node_edges(self, node):
+        return node.edges
