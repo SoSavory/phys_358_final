@@ -42,10 +42,10 @@ class Traveler:
             for edge in self.current_node.edges:
                 frequency_functions.append(edge['traversibility_function'])
 
-            # time_step = self.__wait__(frequency_functions,time)
+            time_step = self.__wait__(frequency_functions,time)
 
-            # self.city.update_time(time_step)
-            self.city.update_time(1)
+            self.city.update_time(time_step)
+            # self.city.update_time(1)
             new_possible_moves = self.get_possible_moves()
             self.decide_move(new_possible_moves)
 

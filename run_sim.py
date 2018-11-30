@@ -37,11 +37,12 @@ def main():
         for j in range(0,10):
             ggt.add_node(i,j)
 
-    for i in range(0,9):
+    for i in range(0,10):
         for j in range(0,10):
             if j != 9:
                 ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(10), np.random.randint(10), 0, 0, short_light_1, short_light_1)
-            ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(10), np.random.randint(10), 1, 1, short_light_2, short_light_2)
+            if i != 9:
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(10), np.random.randint(10), 1, 1, short_light_2, short_light_2)
 
     # Homer's odyssey
     homer = traveler.Traveler(ggt, ggt.nodes[0], ggt.nodes[-1])
@@ -56,9 +57,17 @@ def main():
     #
     # print(homer.get_possible_moves()[0]['node'].position)
     # print(ggt.nodes[10].edges)
+    edge_count = 0
+    for node in ggt.nodes:
+        for edge in node.edges:
+            edge_count += 1
 
-    while homer.current_node != homer.target_node:
+    print(edge_count)
+
+    steps = 0
+    while homer.current_node != homer.target_node and steps < 100:
         homer.decide_move(homer.get_possible_moves())
+        steps += 1
 
     print(homer.current_node.position)
     print(ggt.time)
