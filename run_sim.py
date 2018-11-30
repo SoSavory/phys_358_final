@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+# Traversibility/stop-light functions
+
 def always_traversible(t):
     return 1
 
@@ -17,14 +19,14 @@ def short_light_1(t):
 
 # go on-off-on
 def short_light_2(t):
-    return 2 + (-1)**t
+    return 1 + (-1)**t
 
 
 def main():
     # ghost grid town
     ggt = graph.Graph()
-
-    possible_functions = [short_light_1, short_light_2]
+    # Homer's odyssey
+    homer = traveler.Traveler(ggt, (0,0), (9,9))
 
     # Generate the graph and fill it with a grid of nodes
     for i in range(0,10):
@@ -35,7 +37,10 @@ def main():
         for j in range(0,10):
             if j != 9:
                 ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(10), np.random.randint(10), 0, 0, short_light_1, short_light_1)
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(10), np.random.randint(10), 1, 1, short_light_2, short_light_2)
+            ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(10), np.random.randint(10), 1, 1, short_light_2, short_light_2)
+
+    
+    print(ggt.nodes[-1].edges)
 
 
 
