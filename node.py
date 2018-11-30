@@ -5,7 +5,7 @@ class Node:
         self.position = (x,y)
         self.edges = []
 
-     def __eq__(self, other):
+    def __eq__(self, other):
         return self.position == other.position
 
     def __hash__(self):
