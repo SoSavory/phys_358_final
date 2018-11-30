@@ -15,11 +15,17 @@ def never_traversible(t):
 
 # Go off-on-off-on
 def short_light_1(t):
-    return (-1)**(t+1)
+    if t % 2 != 0:
+        return 1
+    else:
+        return 0
 
 # go on-off-on
 def short_light_2(t):
-    return 1 + (-1)**t
+    if t % 2 == 0:
+        return 1
+    else:
+        return 0
 
 
 def main():
@@ -43,13 +49,19 @@ def main():
 
     # print(ggt.nodes[-1].edges)
     # print(ggt.get_node_from_pos((2,2)))
-    print(homer.get_possible_moves()[0]['node'].position)
+    # print(homer.get_possible_moves()[0]['node'].position)
+    # # print(ggt.nodes[10].edges)
+    #
+    # ggt.update_time(1)
+    #
+    # print(homer.get_possible_moves()[0]['node'].position)
     # print(ggt.nodes[10].edges)
 
-    ggt.update_time(1)
+    while homer.current_node != homer.target_node:
+        homer.decide_move(homer.get_possible_moves())
 
-    print(homer.get_possible_moves()[0]['node'].position)
-    # print(ggt.nodes[10].edges)
+    print(homer.current_node.position)
+    print(ggt.time)
 
 
 main()
