@@ -13,7 +13,7 @@ class Traveler:
     def get_possible_moves(self):
         possible_moves = []
         for edge in self.current_node.edges:
-            if edge['traversibility'] > 0:
+            if edge['traversibility_function'](self.city.time) > 0:
                 possible_moves.append({'node': edge['node'], 'time_cost': edge['time_cost']})
 
         return possible_moves
