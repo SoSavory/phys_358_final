@@ -3,8 +3,8 @@ import graph
 class Traveler:
     def __init__(self, city, current_node, target_node):
         self.city = city
-        self.current_node = self.city.get_node_from_pos(current_node)
-        self.target_node = self.city.get_node_from_pos(target_node)
+        self.current_node = current_node
+        self.target_node = target_node
 
 
 
@@ -12,7 +12,7 @@ class Traveler:
         possible_moves = []
         for edge in self.current_node.edges:
             if edge['traversibility'] > 0:
-                possible_moves.append({'node': edge['node'], time_cost: edge['time_cost']})
+                possible_moves.append({'node': edge['node'], 'time_cost': edge['time_cost']})
 
         return possible_moves
 
@@ -36,7 +36,6 @@ class Traveler:
 
 
     def make_move(self, move):
-        # Need to rethink structures
         self.current_node = move['node']
         self.city.update_time(move['time_cost'])
 

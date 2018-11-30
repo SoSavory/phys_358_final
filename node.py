@@ -10,3 +10,6 @@ class Node:
 
     def __hash__(self):
         return self.position
+
+    def __eqpos__(self, pos):
+        return self.position == pos
