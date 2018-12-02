@@ -6,10 +6,16 @@ class Traveler:
         self.city = city
         self.current_node = current_node
         self.target_node = target_node
-        self.node_history = [current_node]
+
+        # path is of form [{node: node_object, time_cost: int}, int = wait, etc...]
+        self.path = []
+
+        # This stores a node and its distance from the target node
+        # has form {node_object: distance}
+        self.node_distances_from_target = {current_node: self.current_node.distance_to_other(self.target_node.position)}
 
 
-
+    # ignored is a list of nodes to not include in the possible moves
     def get_possible_moves(self):
         possible_moves = []
         for edge in self.current_node.edges:
@@ -19,54 +25,72 @@ class Traveler:
         return possible_moves
 
     # Uses an algorithm to decide which move to make. If there are none, the traveler will wait where they are (like they are stopped at a stop light), and recursively decide again after waiting
-    def decide_move(self, possible_moves):
+    def decide_move(self, possible_moves, ignored=[]):
         if possible_moves:
 
             # Decision making and algorithm would go here
             # Greedy algorithm example:
+            for move in possible_moves:
+                if (move['node'] not in self.node_distances_from_target):
+                    # self.node_distances_from_target[move['node']] = np.sqrt( (move['node'].position[0] - self.target_node.position[0])**2 + (move['node'].position[1] - self.target_node.position[1])**2 )
+                    self.node_distances_from_target[move['node']] = move['node'].distance_to_other(self.target_node.position)
+            possible_moves = list(filter(lambda move: (self.node_distances_from_target[move['node']] <= self.node_distances_from_target[self.current_node]) and (move['node'] not in ignored), possible_moves))
 
-            possible_moves = list(filter(lambda move: move['node'].position[0] > self.current_node.position[0] or move['node'].position[1] > self.current_node.position[1], possible_moves))
-            print(possible_moves)
             if possible_moves:
-                move = sorted(possible_moves, key=itemgetter('time_cost'))[0]
-
+                move = sorted(possible_moves, key=self.__vel_sort__)[-1]
                 # move has form { 'node': node_object, time_cost: int }
-                self.make_move(move)
+                # self.make_move(move)
             else:
-                self.decide_move(possible_moves)
+                self.decide_move(possible_moves,ignored)
 
         else:
-            frequency_functions = []
-            time = self.city.time
 
-            for edge in self.current_node.edges:
-                frequency_functions.append(edge['traversibility_function'])
+            # frequency_functions = []
+            # for edge in self.current_node.edges:
+            #     frequency_functions.append(edge['traversibility_function'])
 
-            time_step = self.__wait__(frequency_functions,time)
+            # move = self.__simwait__()
+            move = 1
+            # self.make_move(move)
+            # self.city.update_time(time_step)
+            # new_possible_moves = self.get_possible_moves()
+            # self.decide_move(new_possible_moves,ignored)
 
-            self.city.update_time(time_step)
-            # self.city.update_time(1)
-            new_possible_moves = self.get_possible_moves()
-            self.decide_move(new_possible_moves)
+        return move
 
 
+    # if move is an int, it represents a wait for the duration = move. Otherwise move is a node and a time to wait
     def make_move(self, move):
+        if type(move) is not int:
+            self.current_node = move['node']
+            # Take a look at this. The simulated partial paths might be way over thought!!!
+            self.city.update_time(move['time_cost'])
+            self.path.append(move)
+        else:
+            self.city.update_time(move)
 
-        self.current_node = move['node']
-        self.node_history.append(move['node'])
-        self.city.update_time(move['time_cost'])
-        print(self.current_node.position)
+            self.path.append(move)
 
-    def __wait__(self, edge_traversibility_functions, sim_time):
-        sim_time_2 = sim_time
+
+
+
+    def __simwait__(self, frequency_functions):
+        print('waiting')
+
+        sim_time = self.city.time
+        sim_time_2 = self.city.time
+
         sum_traversibility = 0
 
         while sum_traversibility < 1:
-            for f in edge_traversibility_functions:
+            for f in frequency_functions:
 
-                sum_traversibility += f(sim_time)
+                sum_traversibility += f(sim_time_2)
                 # print(sum_traversibility)
             sim_time_2 += 1
 
+        print(int(sim_time_2 - sim_time))
+        return int(sim_time_2 - sim_time)
 
-        return sim_time_2 - sim_time
+    def __vel_sort__(self, move):
+        return self.node_distances_from_target[move['node']]/move['time_cost']

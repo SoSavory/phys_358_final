@@ -1,9 +1,11 @@
 import traveler
 import graph
 import node
+import simulation
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+from operator import itemgetter
 import argparse                  # allows us to deal with arguments to main()
 from argparse import RawTextHelpFormatter
 
@@ -42,9 +44,9 @@ def main():
     for i in range(0,10):
         for j in range(0,10):
             if j != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(10), np.random.randint(10), short_light_1, short_light_1)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_1, short_light_1)
             if i != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(10), np.random.randint(10), short_light_2, short_light_2)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_2, short_light_2)
 
     # Homer's odyssey
     homer = traveler.Traveler(ggt, ggt.nodes[0], ggt.nodes[-1])
@@ -66,41 +68,51 @@ def main():
         for edge in node.edges:
             edge_count += 1
 
-    print(edge_count)
+    sim = simulation.Simulation(ggt,homer,100)
+    path_histories = sim.go()
 
-    steps = 0
-    while homer.current_node != homer.target_node and steps < 100:
-        homer.decide_move(homer.get_possible_moves())
-        steps += 1
+    shortest_path = sorted(path_histories, key=itemgetter('time_cost'))[0],
 
-    print(homer.current_node.position)
-    print(ggt.time)
-    # tuples take form (row, column)
-    node_xs = np.zeros(100)
-    node_ys = np.zeros(100)
-    time_costs = np.zeros(360)
-
-    for idx, n in enumerate(ggt.nodes):
-        node_xs[idx] = n.position[1]
-        node_ys[idx] = n.position[0]
-
-    # print(len(homer.node_history))
-    node_hist_length = len(homer.node_history)
-    h_xs = np.zeros(node_hist_length)
-    h_ys = np.zeros(node_hist_length)
-
-    for idx, n in enumerate(homer.node_history):
-        h_xs[idx] = n.position[1]
-        h_ys[idx] = n.position[0]
+    print(shortest_path)
+    for i in path_histories:
+        print(i['time_cost'])
 
 
 
-
-
-
-    plt.scatter(node_xs, node_ys, c='black', marker='.')
-    plt.plot(h_xs, h_ys, c='green', marker='o')
-    plt.show()
+    # steps = 0
+    # while homer.current_node != homer.target_node and steps < 100:
+    #     homer.decide_move(homer.get_possible_moves())
+    #     steps += 1
+    #
+    #
+    #
+    # greedy_time = ggt.time
+    #
+    # # tuples take form (row, column)
+    # node_xs = np.zeros(100)
+    # node_ys = np.zeros(100)
+    # time_costs = np.zeros(360)
+    #
+    # for idx, n in enumerate(ggt.nodes):
+    #     node_xs[idx] = n.position[1]
+    #     node_ys[idx] = n.position[0]
+    #
+    # # print(len(homer.node_history))
+    # node_hist_length = len(homer.node_history)
+    # h_xs = np.zeros(node_hist_length)
+    # h_ys = np.zeros(node_hist_length)
+    #
+    # for idx, n in enumerate(homer.node_history):
+    #     h_xs[idx] = n.position[1]
+    #     h_ys[idx] = n.position[0]
+    #
+    #
+    # plt.scatter(node_xs, node_ys, c='black', marker='.')
+    # plt.plot(h_xs, h_ys, c='green', marker='o')
+    #
+    # # for e in enumerate(ggt.nodes)
+    #
+    # plt.show()
 
 
 main()
