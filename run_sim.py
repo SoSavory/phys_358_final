@@ -44,9 +44,9 @@ def main():
     for i in range(0,10):
         for j in range(0,10):
             if j != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_1, short_light_1)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_1, short_light_1)
             if i != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_2, short_light_2)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_2, short_light_2)
 
     # Homer's odyssey
     homer = traveler.Traveler(ggt, ggt.nodes[0], ggt.nodes[-1])

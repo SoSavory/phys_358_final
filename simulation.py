@@ -48,12 +48,13 @@ class Simulation:
         self.traveler.current_node = path['path'][-1]['node']
         self.city.time = path['time_cost']
 
+
     # Reconstructs a partial path
     def sim_run_path_until(self, path, end_index):
         traveler_path = []
         time = 0
         # print("End index: " + str(end_index))
-        for move in path['path'][0:end_index+1]:
+        for move in path['path'][0:end_index]:
             if type(move) is not int:
                 time += move['time_cost']
             else:
@@ -87,7 +88,6 @@ class Simulation:
         # print(self.traveler.current_node)
         while(self.traveler.current_node != self.traveler.target_node):
             possible_moves = self.traveler.get_possible_moves()
-
             if first_move:
                 move = self.traveler.decide_move(possible_moves, ignored)
                 first_move = False
@@ -118,6 +118,10 @@ class Simulation:
         for i in range(1, self.max_iterations):
             print("iteration" + str(i))
             dev_index, dev_node = self.generate_deviation(path_0['path'])
+            print('===========================================================')
+            print(path_0['path'][dev_index])
+            print(dev_node)
+            print('===========================================================')
             # print(dev_node)
             partial_path = self.sim_run_path_until(path_0, dev_index)
             # possible_moves = self.traveler.get_possible_moves(ignored=[dev_node])

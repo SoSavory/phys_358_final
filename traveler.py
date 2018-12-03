@@ -31,13 +31,15 @@ class Traveler:
             # Decision making and algorithm would go here
             # Greedy algorithm example:
             for move in possible_moves:
+                # We only calculate them as needed and once
                 if (move['node'] not in self.node_distances_from_target):
-                    # self.node_distances_from_target[move['node']] = np.sqrt( (move['node'].position[0] - self.target_node.position[0])**2 + (move['node'].position[1] - self.target_node.position[1])**2 )
                     self.node_distances_from_target[move['node']] = move['node'].distance_to_other(self.target_node.position)
-            possible_moves = list(filter(lambda move: (self.node_distances_from_target[move['node']] <= self.node_distances_from_target[self.current_node]) and (move['node'] not in ignored), possible_moves))
+
+            possible_moves = list(filter(lambda move: move['node'] not in ignored, possible_moves))
 
             if possible_moves:
                 move = sorted(possible_moves, key=self.__vel_sort__)[-1]
+                return move
                 # move has form { 'node': node_object, time_cost: int }
                 # self.make_move(move)
             else:
@@ -56,7 +58,7 @@ class Traveler:
             # new_possible_moves = self.get_possible_moves()
             # self.decide_move(new_possible_moves,ignored)
 
-        return move
+            return move
 
 
     # if move is an int, it represents a wait for the duration = move. Otherwise move is a node and a time to wait
@@ -65,11 +67,10 @@ class Traveler:
             self.current_node = move['node']
             # Take a look at this. The simulated partial paths might be way over thought!!!
             self.city.update_time(move['time_cost'])
-            self.path.append(move)
         else:
             self.city.update_time(move)
 
-            self.path.append(move)
+        self.path.append(move)
 
 
 
@@ -93,4 +94,4 @@ class Traveler:
         return int(sim_time_2 - sim_time)
 
     def __vel_sort__(self, move):
-        return self.node_distances_from_target[move['node']]/move['time_cost']
+        return (self.node_distances_from_target[self.current_node] - self.node_distances_from_target[move['node']])/move['time_cost']
