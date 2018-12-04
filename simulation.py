@@ -23,7 +23,7 @@ class Simulation:
     # traveler_path is a list of moves like: [{node: node_object, time_cost: int}, int]
     def generate_deviation(self, traveler_path):
         deviation_index = np.random.randint(1,len(traveler_path)-1)
-        deviation_node = traveler_path[deviation_index+1]['node']
+        deviation_node = traveler_path[deviation_index]['node']
 
         return deviation_index, deviation_node
 
@@ -36,8 +36,13 @@ class Simulation:
 
     # Reconstructs a partial path
     def sim_run_path_until(self, path, end_index):
-        time = sum(move['time_cost'] for move in path['path'][0:end_index])
-        traveler_path = path['path'][0:end_index]
+        time = 0
+        traveler_path = []
+        # time = sum(move['time_cost'] for move in path['path'][0:end_index])
+        for i in range(0,end_index):
+            time += path['path'][i]['time_cost']
+            traveler_path.append(path['path'][i])
+        # traveler_path = path['path'][0:end_index]
 
         return {'path': traveler_path, 'time_cost': time}
 
@@ -53,7 +58,14 @@ class Simulation:
         while(self.traveler.current_node != self.traveler.target_node):
             possible_moves = self.traveler.get_possible_moves()
             if first_move:
+                # print("possible moves")
+                # print(possible_moves)
+                # print("ignored")
+                # print(ignored)
+                # print("chosen")
+
                 move = self.traveler.decide_move(possible_moves, ignored)
+                # print(move)
                 first_move = False
             else:
                 move = self.traveler.decide_move(possible_moves)

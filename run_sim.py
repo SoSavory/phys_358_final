@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 from operator import itemgetter
 import argparse                  # allows us to deal with arguments to main()
 from argparse import RawTextHelpFormatter
+import glob
+import imageio
+import os
 
 # Traversibility/stop-light functions
 
@@ -30,6 +33,26 @@ def short_light_2(t):
         return 1
     else:
         return 0
+
+def plotit(path_history, step):
+    for p in range(0, path_history.size, step):
+        x = []
+        y = []
+        for i in path_history[p]['path']:
+            x.append(i['node'].position[1])
+            y.append(i['node'].position[0])
+        plt.plot(x, y)
+        plt.title("Iteration: " + str(p) + ", Time cost: " + str(path_history[p]['time_cost']))
+        plt.savefig(str(p) + ".png")
+        plt.close()
+    filenames = sorted(glob.glob("*.png"))
+    images = []
+    with imageio.get_writer('path.gif', mode='I', duration=1) as writer:
+        for filename in filenames:
+            image = imageio.imread(filename)
+            writer.append_data(image)
+            os.remove(filename)
+
 
 
 def main():
@@ -72,6 +95,8 @@ def main():
     sim = simulation.Simulation(ggt,homer,10000)
     path_histories = sim.go()
 
+
+
     sorted_paths = sorted(path_histories, key=itemgetter('time_cost'))
 
     print("target node")
@@ -85,6 +110,8 @@ def main():
 
     print("matching paths")
     print(sorted_paths[0]['path'] == sorted_paths[1]['path'])
+
+    plotit(np.asarray(path_histories), 100)
 
 
 
