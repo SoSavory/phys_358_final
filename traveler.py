@@ -24,41 +24,56 @@ class Traveler:
 
         return possible_moves
 
-    # Uses an algorithm to decide which move to make. If there are none, the traveler will wait where they are (like they are stopped at a stop light), and recursively decide again after waiting
+    # Uses an algorithm to decide which move to make.
     def decide_move(self, possible_moves, ignored=[]):
-        if possible_moves:
 
-            # Decision making and algorithm would go here
-            # Greedy algorithm example:
-            for move in possible_moves:
-                # We only calculate them as needed and once
-                if (move['node'] not in self.node_distances_from_target):
-                    self.node_distances_from_target[move['node']] = move['node'].distance_to_other(self.target_node.position)
+        possible_moves = list(filter(lambda move: move['node'] not in ignored, possible_moves))
 
-            possible_moves = list(filter(lambda move: move['node'] not in ignored, possible_moves))
+        # We only calculate the distance of a node to the objective when it is needed, and only one time.
+        for move in possible_moves:
+            if (move['node'] not in self.node_distances_from_target):
+                self.node_distances_from_target[move['node']] = move['node'].distance_to_other(self.target_node.position)
 
-            if possible_moves:
-                move = sorted(possible_moves, key=self.__vel_sort__)[-1]
-                return move
-                # move has form { 'node': node_object, time_cost: int }
-                # self.make_move(move)
-            else:
-                self.decide_move(possible_moves,ignored)
+        move = sorted(possible_moves, key=self.__vel_sort__)[-1]
 
-        else:
+        return move
 
-            # frequency_functions = []
-            # for edge in self.current_node.edges:
-            #     frequency_functions.append(edge['traversibility_function'])
 
-            # move = self.__simwait__()
-            move = 1
-            # self.make_move(move)
-            # self.city.update_time(time_step)
-            # new_possible_moves = self.get_possible_moves()
-            # self.decide_move(new_possible_moves,ignored)
 
-            return move
+
+        # if possible_moves:
+        #
+        #     # Decision making and algorithm would go here
+        #     # Greedy algorithm example:
+        #     for move in possible_moves:
+        #         # We only calculate them as needed and once
+        #         if (move['node'] not in self.node_distances_from_target):
+        #             self.node_distances_from_target[move['node']] = move['node'].distance_to_other(self.target_node.position)
+        #
+        #     possible_moves = list(filter(lambda move: move['node'] not in ignored, possible_moves))
+        #
+        #     if possible_moves:
+        #         move = sorted(possible_moves, key=self.__vel_sort__)[-1]
+        #         return move
+        #         # move has form { 'node': node_object, time_cost: int }
+        #         # self.make_move(move)
+        #     else:
+        #         self.decide_move(possible_moves,ignored)
+        #
+        # else:
+        #
+        #     # frequency_functions = []
+        #     # for edge in self.current_node.edges:
+        #     #     frequency_functions.append(edge['traversibility_function'])
+        #
+        #     # move = self.__simwait__()
+        #     move = 1
+        #     # self.make_move(move)
+        #     # self.city.update_time(time_step)
+        #     # new_possible_moves = self.get_possible_moves()
+        #     # self.decide_move(new_possible_moves,ignored)
+        #
+        #     return move
 
 
     # if move is an int, it represents a wait for the duration = move. Otherwise move is a node and a time to wait

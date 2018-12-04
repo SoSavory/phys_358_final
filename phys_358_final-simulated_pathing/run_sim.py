@@ -44,14 +44,13 @@ def main():
     for i in range(0,10):
         for j in range(0,10):
             if j != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_1, short_light_1)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_1, short_light_1)
             if i != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_2, short_light_2)
+                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(10), short_light_2, short_light_2)
 
     # Homer's odyssey
     homer = traveler.Traveler(ggt, ggt.nodes[0], ggt.nodes[-1])
-    print("Current node:")
-    print(homer.current_node)
+
 
     # print(ggt.nodes[-1].edges)
     # print(ggt.get_node_from_pos((2,2)))
@@ -69,24 +68,17 @@ def main():
         for edge in node.edges:
             edge_count += 1
 
-    sim = simulation.Simulation(ggt,homer,10000)
-    path_histories = sim.go()
+    sim = simulation.Simulation(ggt,homer,100)
+    path_histories = False
 
-    sorted_paths = sorted(path_histories, key=itemgetter('time_cost'))
+    while (path_histories == False):
+        path_histories = sim.go()
 
-    print("target node")
-    print(homer.target_node)
+    shortest_path = sorted(path_histories, key=itemgetter('time_cost'))[0],
 
-    print("shortest path: ")
-    print(sorted_paths[0])
-
-    print("second shortest path")
-    print(sorted_paths[1])
-
-    print("matching paths")
-    print(sorted_paths[0]['path'] == sorted_paths[1]['path'])
-
-
+    print(shortest_path)
+    for i in path_histories:
+        print(i['time_cost'])
 
 
 
