@@ -17,6 +17,8 @@ class Simulation:
         # path has form {path: [node_object, node_object, wait (an integer), node, wait, node...], time_cost: int}
         self.path_histories = []
 
+        self.kept_paths = []
+
 
 
     # Returns the node at which the 'greedy-like' algorithm will ignore its previously accepted move for a given node
@@ -76,7 +78,7 @@ class Simulation:
 
     def go(self):
         # Generate first path
-
+        self.traveler.path.append({'node': self.traveler.current_node, 'time_cost': 0})
         while self.traveler.current_node != self.traveler.target_node:
 
             move = self.traveler.decide_move(self.traveler.get_possible_moves())
@@ -107,4 +109,6 @@ class Simulation:
             if a >= np.random.rand():
                 path_0 = path_1
 
-        return self.path_histories
+            self.kept_paths.append(path_0)
+
+        return self.kept_paths, self.path_histories

@@ -9,7 +9,7 @@ class Node:
         return self.position == other.position
 
     def __hash__(self):
-        return self.position[0]*10 + self.position[1]
+        return self.position[0]*20 + self.position[1]
 
     def __eqpos__(self, pos):
         return self.position == pos

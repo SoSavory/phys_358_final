@@ -11,6 +11,7 @@ from argparse import RawTextHelpFormatter
 import glob
 import imageio
 import os
+import time
 
 # Traversibility/stop-light functions
 
@@ -60,16 +61,16 @@ def main():
     ggt = graph.Graph()
 
     # Generate the graph and fill it with a grid of nodes
-    for i in range(0,10):
-        for j in range(0,10):
+    for i in range(0,20):
+        for j in range(0,20):
             ggt.add_node(i,j)
 
-    for i in range(0,10):
-        for j in range(0,10):
-            if j != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+1+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_1, short_light_1)
-            if i != 9:
-                ggt.add_edge(ggt.nodes[j + (10*i)], ggt.nodes[j+10+(10*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_2, short_light_2)
+    for i in range(0,20):
+        for j in range(0,20):
+            if j != 19:
+                ggt.add_edge(ggt.nodes[j + (20*i)], ggt.nodes[j+1+(20*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_1, short_light_1)
+            if i != 19:
+                ggt.add_edge(ggt.nodes[j + (20*i)], ggt.nodes[j+20+(20*i)], np.random.randint(1,10), np.random.randint(1,10), short_light_2, short_light_2)
 
     # Homer's odyssey
     homer = traveler.Traveler(ggt, ggt.nodes[0], ggt.nodes[-1])
@@ -92,12 +93,16 @@ def main():
         for edge in node.edges:
             edge_count += 1
 
-    sim = simulation.Simulation(ggt,homer,10000)
-    path_histories = sim.go()
+    start_time = time.time()
+    sim = simulation.Simulation(ggt,homer,100000)
+    kept_paths, path_histories = sim.go()
+    end_time = time.time()
+
+    print("Run Time: " + str(end_time - start_time))
 
 
 
-    sorted_paths = sorted(path_histories, key=itemgetter('time_cost'))
+    sorted_paths = sorted(kept_paths, key=itemgetter('time_cost'))
 
     print("target node")
     print(homer.target_node)
@@ -111,7 +116,11 @@ def main():
     print("matching paths")
     print(sorted_paths[0]['path'] == sorted_paths[1]['path'])
 
-    plotit(np.asarray(path_histories), 100)
+    plotit(np.asarray(kept_paths), 1000)
+
+    print("Iterations Where minimum path length found: ")
+    print([ idx for idx, i in enumerate(list(filter(lambda path: path['time_cost'] == sorted_paths[0]['time_cost'], path_histories))) ])
+
 
 
 
