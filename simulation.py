@@ -105,7 +105,7 @@ class Simulation:
             # Simulated annealing where t = iteration number
 
             a = np.exp(r/alpha)
-            alpha = alpha*0.9
+            alpha = alpha*0.99
             if a >= np.random.rand():
                 path_0 = path_1
 

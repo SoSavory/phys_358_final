@@ -35,7 +35,7 @@ def short_light_2(t):
     else:
         return 0
 
-def plotit(path_history, step):
+def plotit(path_history, name, step):
     for p in range(0, path_history.size, step):
         x = []
         y = []
@@ -48,7 +48,7 @@ def plotit(path_history, step):
         plt.close()
     filenames = sorted(glob.glob("*.png"))
     images = []
-    with imageio.get_writer('path.gif', mode='I', duration=1) as writer:
+    with imageio.get_writer(name+'.gif', mode='I', duration=1) as writer:
         for filename in filenames:
             image = imageio.imread(filename)
             writer.append_data(image)
@@ -94,7 +94,7 @@ def main():
             edge_count += 1
 
     start_time = time.time()
-    sim = simulation.Simulation(ggt,homer,100000)
+    sim = simulation.Simulation(ggt,homer,10000)
     kept_paths, path_histories = sim.go()
     end_time = time.time()
 
@@ -116,9 +116,10 @@ def main():
     print("matching paths")
     print(sorted_paths[0]['path'] == sorted_paths[1]['path'])
 
-    plotit(np.asarray(kept_paths), 1000)
+    plotit(np.asarray(kept_paths), 'kept_paths', 100)
+    plotit(np.asarray(path_histories), 'all_paths', 100)
 
-    print("Iterations Where minimum path length found: ")
+    print("Iteration Where minimum path length found: ")
     print([ idx for idx, i in enumerate(list(filter(lambda path: path['time_cost'] == sorted_paths[0]['time_cost'], path_histories))) ])
 
 
